@@ -22,11 +22,16 @@ public class Kite {
     private int id;
 
     @NonNull
+    @NotNull(message = "El viento requerido no puede estar vacio")
+    @Min(value = 14, message = "El viento mínimo requerido es 14")
+    @Max(value = 40, message = "El viento máximo permitido es 40")
     private int windRequired;
 
     @NonNull
+    @NotBlank(message = "La ubicación no puede estar vacia")
     private String location;
 
     @NonNull
+    @NotBlank(message = "Tienes que especificar el dueño")
     private String owner;
 }
