@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -40,6 +42,30 @@ class KiteServiceTest {
         System.out.println(savedKite3);
         System.out.println("================================");
 
+    }
+
+    @Test
+    @DisplayName("Asigno una cometa a auronplay que la utilizará en Madrid")
+    void assignKiteToAuronplayThatUseInMadrid(){
+        Kite kite = new Kite(23, "Madrid", "auronplay");
+
+        Kite saveKite = kiteService.saveKite(kite);
+
+        System.out.println("================================");
+        System.out.println("Esta es la cometa que has guardado");
+        System.out.println(saveKite);
+        System.out.println("================================");
+    }
+
+    @Test
+    @DisplayName("Busco las cometas que tiene hombre_de_la_rae en Madrid")
+    void findKiteByOwnerAndLocation(){
+        List<Kite> foundKites = kiteService.getAllKites("hombre_de_la_rae", "Madrid");
+
+        System.out.println("================================");
+        System.out.println("Estas son las cometas que hemos encontrado");
+        System.out.println(foundKites);
+        System.out.println("================================");
     }
 
 }
