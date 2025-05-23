@@ -27,9 +27,6 @@ public class KiteService {
 
     //GET
 
-    public List<Kite> getAllKites(){
-        return kiteRepository.findAll();
-    }
 
     //todo: mandar un mensaje de una excepción personalizada
     public ResponseEntity<?> getKiteById(int id){
