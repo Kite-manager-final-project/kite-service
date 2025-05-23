@@ -1,13 +1,16 @@
 package com.iron.kite_service.controllers;
 
+import com.iron.kite_service.exceptions.KiteNotFoundException;
 import com.iron.kite_service.models.Kite;
 import com.iron.kite_service.services.KiteService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/kite")
@@ -27,7 +30,13 @@ public class KiteController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getKiteById(@PathVariable int id){
-        return ResponseEntity.ok(kiteService.getKiteById(id));
+        try {
+            return ResponseEntity.ok(kiteService.getKiteById(id));
+        }catch (KiteNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", e.getMessage(), "status", 404));
+        }
+
     }
 
     //POST
