@@ -49,10 +49,14 @@ public class KiteController {
 
     //PUT
 
-    //todo: implementar la lógica en el service
     @PutMapping("/{id}")
-    ResponseEntity<Kite> updateKite(@PathVariable int id, @Valid @RequestBody Kite kite){
-        return null;
+    ResponseEntity<?> updateKite(@PathVariable int id, @Valid @RequestBody Kite kite){
+        try {
+            return ResponseEntity.ok(kiteService.updateKite(id, kite));
+        }catch (KiteNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", e.getMessage(), "status", 404));
+        }
     }
 
 
