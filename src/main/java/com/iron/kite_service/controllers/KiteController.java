@@ -2,6 +2,7 @@ package com.iron.kite_service.controllers;
 
 import com.iron.kite_service.models.Kite;
 import com.iron.kite_service.services.KiteService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,8 +32,19 @@ public class KiteController {
 
     //POST
 
+    @PostMapping
+    public ResponseEntity<Kite> saveKite(@Valid @RequestBody Kite kite){
+        return ResponseEntity.ok(kiteService.saveKite(kite));
+    }
+
 
     //PUT
+
+    //todo: implementar la lógica en el service
+    @PutMapping("/{id}")
+    ResponseEntity<Kite> updateKite(@PathVariable int id, @Valid @RequestBody Kite kite){
+        return null;
+    }
 
 
     //PATCH
