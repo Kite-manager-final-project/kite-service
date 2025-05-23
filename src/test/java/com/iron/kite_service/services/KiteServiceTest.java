@@ -68,4 +68,27 @@ class KiteServiceTest {
         System.out.println("================================");
     }
 
+    @Test
+    @DisplayName("Busco las cometas que tiene hombre_de_la_rae")
+    void finsKitesHombreDeLaRae(){
+        List<Kite> foundKites = kiteService.getAllKites("hombre_de_la_rae", null);
+
+        System.out.println("================================");
+        System.out.println("Estas son las cometas que hemos encontrado");
+        System.out.println(foundKites);
+        System.out.println("================================");
+    }
+
+    @Test
+    @DisplayName("Busco las cometas que están registradas en Madrid")
+    void finsKitesInMadrid(){
+        List<Kite> foundKites = kiteService.getAllKites(null, "Madrid");
+
+        System.out.println("================================");
+        System.out.println("Estas son las cometas que hemos encontrado");
+        System.out.println(foundKites);
+        System.out.println("================================");
+    }
+
+
 }
