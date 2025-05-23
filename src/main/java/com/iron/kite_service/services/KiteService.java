@@ -17,8 +17,6 @@ public class KiteService {
 
     //todo: implementar put y patch
 
-    //todo: crear excepciones personalizadas
-
     @Autowired
     private KiteRepository kiteRepository;
 
@@ -31,7 +29,6 @@ public class KiteService {
     //GET
 
 
-    //todo: mandar un mensaje de una excepción personalizada
     public ResponseEntity<?> getKiteById(int id){
         Optional<Kite> foundKite = kiteRepository.findById(id);
 
