@@ -34,10 +34,10 @@ public class KiteService {
     public ResponseEntity<?> getKiteById(int id){
         Optional<Kite> foundKite = kiteRepository.findById(id);
 
-        if (foundKite.isPresent())
-            return new ResponseEntity<>(foundKite.get(), HttpStatus.OK);
-        else
+        if (foundKite.isEmpty())
             throw new KiteNotFoundException("La cometa que intentas buscar no existe");
+
+        return new ResponseEntity<>(foundKite.get(), HttpStatus.OK);
 
     }
 
@@ -62,10 +62,11 @@ public class KiteService {
 
         Optional<Kite> kiteToDelete = kiteRepository.findById(id);
 
-        if (kiteToDelete.isPresent())
-            kiteRepository.delete(kiteToDelete.get());
-        else
+        if (kiteToDelete.isEmpty())
             throw new KiteNotFoundException("La cometa que intentas eliminar no existe");
+
+        kiteRepository.delete(kiteToDelete.get());
+
     }
 
     //PUT
@@ -73,56 +74,53 @@ public class KiteService {
     public ResponseEntity<?> updateKite(int id, Kite kite){
         Optional<Kite> foundKite = kiteRepository.findById(id);
 
-        if (foundKite.isPresent()){
-            Kite kiteToChange = foundKite.get();
-
-            kiteToChange.setLocation(kite.getLocation());
-            kiteToChange.setOwner(kite.getOwner());
-            kiteToChange.setWindRequired(kite.getWindRequired());
-
-            Kite savedKite = kiteRepository.save(kiteToChange);
-
-            return new ResponseEntity<>(savedKite, HttpStatus.OK);
-        }
-        else
+        if (foundKite.isEmpty())
             throw new KiteNotFoundException("La cometa que intentas modificar no existe");
+
+        Kite kiteToChange = foundKite.get();
+
+        kiteToChange.setLocation(kite.getLocation());
+        kiteToChange.setOwner(kite.getOwner());
+        kiteToChange.setWindRequired(kite.getWindRequired());
+
+        Kite updatedKite = kiteRepository.save(kiteToChange);
+
+        return new ResponseEntity<>(updatedKite, HttpStatus.OK);
+
     }
 
-
     //PATCH
-
-
 
     public ResponseEntity<?> updateWindRequiredKite(int id, KiteUpdatedWindDTO kite){
         Optional<Kite> foundKite = kiteRepository.findById(id);
 
-        if (foundKite.isPresent()){
-            Kite kiteToUpdate = foundKite.get();
-
-            kiteToUpdate.setWindRequired(kite.getWindRequired());
-
-            Kite savedKite = kiteRepository.save(kiteToUpdate);
-
-            return new ResponseEntity<>(savedKite, HttpStatus.OK);
-        }
-        else
+        if (foundKite.isEmpty())
             throw new KiteNotFoundException("La cometa que intentas modificar no existe");
+
+        Kite kiteToUpdate = foundKite.get();
+
+        kiteToUpdate.setWindRequired(kite.getWindRequired());
+
+        Kite updatedKite = kiteRepository.save(kiteToUpdate);
+
+        return new ResponseEntity<>(updatedKite, HttpStatus.OK);
+
     }
 
     public ResponseEntity<?> updateLocationKite(int id, KiteUpdatedLocationDTO kite){
         Optional<Kite> foundKite = kiteRepository.findById(id);
 
-        if (foundKite.isPresent()){
-            Kite kiteToUpdate = foundKite.get();
-
-            kiteToUpdate.setLocation(kite.getLocation());
-
-            Kite savedKite = kiteRepository.save(kiteToUpdate);
-
-            return new ResponseEntity<>(savedKite, HttpStatus.OK);
-        }
-        else
+        if (foundKite.isEmpty())
             throw new KiteNotFoundException("La cometa que intentas modificar no existe");
+
+        Kite kiteToUpdate = foundKite.get();
+
+        kiteToUpdate.setLocation(kite.getLocation());
+
+        Kite updatedKite = kiteRepository.save(kiteToUpdate);
+
+        return new ResponseEntity<>(updatedKite, HttpStatus.OK);
+
     }
 
 
