@@ -1,5 +1,7 @@
 package com.iron.kite_service.services;
 
+import com.iron.kite_service.dtos.KiteUpdatedLocationDTO;
+import com.iron.kite_service.dtos.KiteUpdatedWindDTO;
 import com.iron.kite_service.exceptions.KiteNotFoundException;
 import com.iron.kite_service.models.Kite;
 import com.iron.kite_service.repositories.KiteRepository;
@@ -15,7 +17,7 @@ import java.util.Optional;
 @Service
 public class KiteService {
 
-    //todo: implementar put y patch
+
 
     @Autowired
     private KiteRepository kiteRepository;
@@ -85,6 +87,40 @@ public class KiteService {
 
 
     //PATCH
+
+
+
+    public ResponseEntity<?> updateWindRequiredKite(int id, KiteUpdatedWindDTO kite){
+        Optional<Kite> foundKite = kiteRepository.findById(id);
+
+        if (foundKite.isPresent()){
+            Kite kiteToUpdate = foundKite.get();
+
+            kiteToUpdate.setWindRequired(kite.getWindRequired());
+
+            Kite savedKite = kiteRepository.save(kiteToUpdate);
+
+            return new ResponseEntity<>(savedKite, HttpStatus.OK);
+        }
+        else
+            throw new KiteNotFoundException("La cometa que intentas modificar no existe");
+    }
+
+    public ResponseEntity<?> updateLocationKite(int id, KiteUpdatedLocationDTO kite){
+        Optional<Kite> foundKite = kiteRepository.findById(id);
+
+        if (foundKite.isPresent()){
+            Kite kiteToUpdate = foundKite.get();
+
+            kiteToUpdate.setLocation(kite.getLocation());
+
+            Kite savedKite = kiteRepository.save(kiteToUpdate);
+
+            return new ResponseEntity<>(savedKite, HttpStatus.OK);
+        }
+        else
+            throw new KiteNotFoundException("La cometa que intentas modificar no existe");
+    }
 
 
 }
