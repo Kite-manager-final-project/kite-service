@@ -1,5 +1,7 @@
 package com.iron.kite_service.controllers;
 
+import com.iron.kite_service.dtos.KiteUpdatedLocationDTO;
+import com.iron.kite_service.dtos.KiteUpdatedWindDTO;
 import com.iron.kite_service.exceptions.KiteNotFoundException;
 import com.iron.kite_service.models.Kite;
 import com.iron.kite_service.services.KiteService;
@@ -50,7 +52,7 @@ public class KiteController {
     //PUT
 
     @PutMapping("/{id}")
-    ResponseEntity<?> updateKite(@PathVariable int id, @Valid @RequestBody Kite kite){
+    public ResponseEntity<?> updateKite(@PathVariable int id, @Valid @RequestBody Kite kite){
         try {
             return ResponseEntity.ok(kiteService.updateKite(id, kite));
         }catch (KiteNotFoundException e){
@@ -62,8 +64,33 @@ public class KiteController {
 
     //PATCH
 
+    @PatchMapping("/updateWindRequired/{id}")
+    public ResponseEntity<?> updateWindRequired(@PathVariable int id, @Valid @RequestBody KiteUpdatedWindDTO kite){
+        try {
+            return ResponseEntity.ok(kiteService.updateWindRequiredKite(id, kite));
+        }catch (KiteNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", e.getMessage(), "status", 404));
+        }
+    }
+
+    @PatchMapping("/updateLocation/{id}")
+    public ResponseEntity<?> updateLocation(@PathVariable int id, @Valid @RequestBody KiteUpdatedLocationDTO kite){
+        try {
+            return ResponseEntity.ok(kiteService.updateLocationKite(id, kite));
+        }catch (KiteNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", e.getMessage(), "status", 404));
+        }
+    }
+
 
     //DELETE
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteKite(@PathVariable int id){
+        return null;
+    }
 
 
 }
