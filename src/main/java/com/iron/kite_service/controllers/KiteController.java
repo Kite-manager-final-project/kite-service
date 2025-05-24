@@ -1,5 +1,6 @@
 package com.iron.kite_service.controllers;
 
+import com.iron.kite_service.dtos.KiteResponseDTO;
 import com.iron.kite_service.dtos.KiteUpdatedLocationDTO;
 import com.iron.kite_service.dtos.KiteUpdatedWindDTO;
 import com.iron.kite_service.exceptions.KiteNotFoundException;
@@ -24,8 +25,8 @@ public class KiteController {
     //GET
 
     @GetMapping("/allKites")
-    public ResponseEntity<List<Kite>> getAllKites(@RequestParam(required = false) String owner,
-                                                  @RequestParam(required = false) String location){
+    public ResponseEntity<List<KiteResponseDTO>> getAllKites(@RequestParam(required = false) String owner,
+                                                             @RequestParam(required = false) String location){
 
         return ResponseEntity.ok(kiteService.getAllKites(owner, location));
     }

@@ -10,13 +10,13 @@ import lombok.NonNull;
 @NoArgsConstructor
 public class PersonDTO {
 
-    @NonNull
+    private String nickName;
+
     private String name;
 
 
-    @NonNull
     private int phoneNumber;
 
-    @NonNull
+
     private String email;
 }
