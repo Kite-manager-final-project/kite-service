@@ -60,9 +60,12 @@ public class KiteService {
 
     public void deleteKite(int id){
 
-        var kiteToDelete = kiteRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Optional<Kite> kiteToDelete = kiteRepository.findById(id);
 
-        kiteRepository.delete(kiteToDelete);
+        if (kiteToDelete.isPresent())
+            kiteRepository.delete(kiteToDelete.get());
+        else
+            throw new KiteNotFoundException("La cometa que intentas eliminar no existe");
     }
 
     //PUT
