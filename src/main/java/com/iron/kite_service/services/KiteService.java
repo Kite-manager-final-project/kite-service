@@ -36,7 +36,7 @@ public class KiteService {
     //GET
 
 
-    public ResponseEntity<?> getKiteById(int id){
+    public KiteResponseDTO getKiteById(int id){
         Optional<Kite> foundKite = kiteRepository.findById(id);
 
         if (foundKite.isEmpty())
@@ -48,9 +48,9 @@ public class KiteService {
         System.out.println("Owner: "+kite.getOwner());
         PersonDTO person = personFeignClient.getPersonByNickName(kite.getOwner());
 
-        KiteResponseDTO response = new KiteResponseDTO(kite, person);
+        return new KiteResponseDTO(kite, person);
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
+
     }
 
     public List<KiteResponseDTO> getAllKites(String username, String location){
@@ -91,7 +91,7 @@ public class KiteService {
 
     //PUT
 
-    public ResponseEntity<?> updateKite(int id, Kite kite){
+    public Kite updateKite(int id, Kite kite){
         Optional<Kite> foundKite = kiteRepository.findById(id);
 
         if (foundKite.isEmpty())
@@ -103,15 +103,13 @@ public class KiteService {
         kiteToChange.setOwner(kite.getOwner());
         kiteToChange.setWindRequired(kite.getWindRequired());
 
-        Kite updatedKite = kiteRepository.save(kiteToChange);
-
-        return new ResponseEntity<>(updatedKite, HttpStatus.OK);
+        return kiteRepository.save(kiteToChange);
 
     }
 
     //PATCH
 
-    public ResponseEntity<?> updateWindRequiredKite(int id, KiteUpdatedWindDTO kite){
+    public Kite updateWindRequiredKite(int id, KiteUpdatedWindDTO kite){
         Optional<Kite> foundKite = kiteRepository.findById(id);
 
         if (foundKite.isEmpty())
@@ -121,13 +119,11 @@ public class KiteService {
 
         kiteToUpdate.setWindRequired(kite.getWindRequired());
 
-        Kite updatedKite = kiteRepository.save(kiteToUpdate);
-
-        return new ResponseEntity<>(updatedKite, HttpStatus.OK);
+        return kiteRepository.save(kiteToUpdate);
 
     }
 
-    public ResponseEntity<?> updateLocationKite(int id, KiteUpdatedLocationDTO kite){
+    public Kite updateLocationKite(int id, KiteUpdatedLocationDTO kite){
         Optional<Kite> foundKite = kiteRepository.findById(id);
 
         if (foundKite.isEmpty())
@@ -137,9 +133,7 @@ public class KiteService {
 
         kiteToUpdate.setLocation(kite.getLocation());
 
-        Kite updatedKite = kiteRepository.save(kiteToUpdate);
-
-        return new ResponseEntity<>(updatedKite, HttpStatus.OK);
+        return kiteRepository.save(kiteToUpdate);
 
     }
 
