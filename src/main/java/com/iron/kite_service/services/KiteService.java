@@ -44,6 +44,8 @@ public class KiteService {
 
         Kite kite = foundKite.get();
 
+        //aqui falla
+        System.out.println("Owner: "+kite.getOwner());
         PersonDTO person = personFeignClient.getPersonByNickName(kite.getOwner());
 
         KiteResponseDTO response = new KiteResponseDTO(kite, person);
