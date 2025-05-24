@@ -98,6 +98,4 @@ public class KiteController {
                     .body(Map.of("message", e.getMessage(), "status", 404));
         }
     }
-
-
 }

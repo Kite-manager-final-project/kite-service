@@ -16,12 +16,15 @@ public class KiteResponseDTO {
 
     private String location;
 
-    private PersonDTO owner;
+    private String owner;
 
-    public KiteResponseDTO(Kite kite, PersonDTO owner){
+    private PersonDTO person;
+
+    public KiteResponseDTO(Kite kite, PersonDTO person){
         setId(kite.getId());
         setWindRequired(kite.getWindRequired());
         setLocation(kite.getLocation());
-        setOwner(owner);
+        setOwner(kite.getOwner());
+        setPerson(person);
     }
 }

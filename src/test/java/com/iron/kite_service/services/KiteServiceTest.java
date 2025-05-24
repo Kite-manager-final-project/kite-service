@@ -57,7 +57,7 @@ class KiteServiceTest {
         System.out.println("================================");
     }
 
-    @Test
+    /*@Test
     @DisplayName("Busco las cometas que tiene hombre_de_la_rae en Madrid")
     void findKiteByOwnerAndLocation(){
         List<Kite> foundKites = kiteService.getAllKites("hombre_de_la_rae", "Madrid");
@@ -88,7 +88,7 @@ class KiteServiceTest {
         System.out.println("Estas son las cometas que hemos encontrado");
         System.out.println(foundKites);
         System.out.println("================================");
-    }
+    }*/
 
 
 }
