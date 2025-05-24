@@ -89,7 +89,13 @@ public class KiteController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteKite(@PathVariable int id){
-        return null;
+        try {
+            kiteService.deleteKite(id);
+            return ResponseEntity.ok("Esa cometa ha sido eliminada correctamente");
+        }catch (KiteNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", e.getMessage(), "status", 404));
+        }
     }
 
 
