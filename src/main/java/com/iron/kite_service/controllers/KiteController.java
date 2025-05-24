@@ -27,6 +27,7 @@ public class KiteController {
     @GetMapping("/allKites")
     public ResponseEntity<List<KiteResponseDTO>> getAllKites(@RequestParam(required = false) String owner,
                                                              @RequestParam(required = false) String location){
+
         return ResponseEntity.ok(kiteService.getAllKites(owner, location));
     }
 

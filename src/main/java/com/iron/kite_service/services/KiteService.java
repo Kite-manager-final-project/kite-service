@@ -53,20 +53,22 @@ public class KiteService {
 
     }
 
+
+
     public List<KiteResponseDTO> getAllKites(String username, String location){
 
-        if (username != null && location != null)
-            return kiteRepository.findKitesByOwnerAndLocation(username, location);
+        List<Kite> kites;
 
-        if (username != null)
-            return kiteRepository.findKitesByOwner(username);
+        if (username != null && location != null) //esto me da Internal server error
+            kites =  kiteRepository.findKitesByOwnerAndLocation(username, location);
+        else if (username != null) //esto me da Internal server error
+            kites = kiteRepository.findKitesByOwner(username);
+        else if (location != null) //esto me da Internal server error
+            kites = kiteRepository.findKitesByLocation(location);
+        else
+            kites = kiteRepository.findAll();
 
-        if (location != null)
-            return kiteRepository.findKitesByLocation(location);
-
-        List<Kite> allKites = kiteRepository.findAll();
-
-        return allKites.stream().map(kite -> {
+        return kites.stream().map(kite -> {
 
             PersonDTO person = personFeignClient.getPersonByNickName(kite.getOwner());
 

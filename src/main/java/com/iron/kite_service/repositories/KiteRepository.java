@@ -11,10 +11,10 @@ import java.util.List;
 public interface KiteRepository extends JpaRepository<Kite, Integer> {
 
 
-    List<KiteResponseDTO> findKitesByOwner(String owner);
+    List<Kite> findKitesByOwner(String owner);
 
-    List<KiteResponseDTO> findKitesByLocation(String location);
+    List<Kite> findKitesByLocation(String location);
 
 
-    List<KiteResponseDTO> findKitesByOwnerAndLocation(String ownerName, String location);
+    List<Kite> findKitesByOwnerAndLocation(String owner, String location);
 }
