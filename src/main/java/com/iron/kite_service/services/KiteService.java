@@ -7,6 +7,7 @@ import com.iron.kite_service.dtos.KiteUpdatedWindDTO;
 import com.iron.kite_service.dtos.PersonDTO;
 import com.iron.kite_service.exceptions.KiteNotFoundException;
 import com.iron.kite_service.exceptions.OwnerNotFoundException;
+import com.iron.kite_service.exceptions.OwnerPreviusAssignException;
 import com.iron.kite_service.models.Kite;
 import com.iron.kite_service.repositories.KiteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,7 +118,7 @@ public class KiteService {
         final String OWNER_KITE_RECEIVED = kite.getOwner();
 
         if (!OWNER.equals(OWNER_KITE_RECEIVED))
-            throw new OwnerNotFoundException("No le puedes cambiar el dueño a una cometa, tienes que pasarle el mismo dueño");
+            throw new OwnerPreviusAssignException("No le puedes cambiar el dueño a una cometa, tienes que pasarle el mismo dueño");
 
         kiteToChange.setLocation(kite.getLocation());
         kiteToChange.setOwner(kite.getOwner());
