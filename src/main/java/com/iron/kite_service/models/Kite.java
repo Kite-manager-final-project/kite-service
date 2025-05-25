@@ -11,7 +11,6 @@ import lombok.*;
 @Table(name = "kites")
 @Data
 @RequiredArgsConstructor
-@AllArgsConstructor
 @NoArgsConstructor
 public class Kite {
 
