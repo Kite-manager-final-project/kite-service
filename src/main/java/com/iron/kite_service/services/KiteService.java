@@ -10,6 +10,7 @@ import com.iron.kite_service.exceptions.OwnerNotFoundException;
 import com.iron.kite_service.exceptions.OwnerPreviusAssignException;
 import com.iron.kite_service.models.Kite;
 import com.iron.kite_service.repositories.KiteRepository;
+import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,20 +29,30 @@ public class KiteService {
 
     //POST
 
+    /**
+     * Guarda una cometa en la base de datos
+     * @param kite la cometa a guardar en la base de datos
+     * @return la cometa que le ha mandado el cliente
+     * @throws FeignException.NotFound lanza esta excepción si el dueño a asignar no existe
+     */
     public Kite saveKite(Kite kite){
-        PersonDTO person = personFeignClient.getPersonByNickName(kite.getOwner());
+        try {
+            personFeignClient.getPersonByNickName(kite.getOwner());
+            return kiteRepository.save(kite);
+        }catch (FeignException.NotFound e) {
+            System.out.println("Error");
+            throw new OwnerNotFoundException("El dueño '" + kite.getOwner() + "' no existe.");
+        }
 
-        System.out.println("La persona encontrada es "+person);
-
-        if (person == null)
-            throw new OwnerNotFoundException("El dueño asignado a esta cometa no existe");
-
-        return kiteRepository.save(kite);
     }
 
     //GET
 
-
+    /**
+     * Busca una cometa por id
+     * @param id
+     * @return Devuelve esa cometa con el id especificado
+     */
     public KiteResponseDTO getKiteById(int id){
         Optional<Kite> foundKite = kiteRepository.findById(id);
 
@@ -57,20 +68,24 @@ public class KiteService {
 
     }
 
-
-
+    /**
+     * Busca todas las cometas, los parámetros son opcionales, si no quieres filtrar ciertos parámetros, hay que mandarlos como null
+     * @param username para filtrar las cometas por owner
+     * @param location para filtrar las cometas por location
+     * @return devuelve varias cometas que cumplan los filtros especificados, o todas si no hay especificación
+     */
     public List<KiteResponseDTO> getAllKites(String username, String location){
 
         List<Kite> kites;
 
-        if (username != null && location != null) //esto me da Internal server error
+        if (username != null && location != null)
             kites =  kiteRepository.findKitesByOwnerAndLocation(username, location);
-        else if (username != null) //esto me da Internal server error
+        else if (username != null)
             kites = kiteRepository.findKitesByOwner(username);
-        else if (location != null) //esto me da Internal server error
+        else if (location != null)
             kites = kiteRepository.findKitesByLocation(location);
         else
-            kites = kiteRepository.findAll();
+            kites = kiteRepository.findAll(); //cuando no le paso ningun parametro, me da error, y antes me funcionaba, no he tocado nada
 
         return kites.stream().map(kite -> {
 
@@ -84,6 +99,11 @@ public class KiteService {
 
     //DELETE
 
+    /**
+     * Para eliminar una cometa
+     * @param id El id de la cometa a eliminar
+     * @throws KiteNotFoundException si no existe ninguna cometa con ese ID
+     */
     public void deleteKite(int id){
 
         Optional<Kite> kiteToDelete = kiteRepository.findById(id);
@@ -97,16 +117,19 @@ public class KiteService {
 
     //PUT
 
+    /**
+     * Modifica todos los campos de una cometa, salvo el dueño. Aún así, hay que especificar el dueño
+     * @param id El id de la cometa a modificar
+     * @param kite La cometa en sí con los nuevos datos
+     * @return la cometa modificada
+     */
     public Kite updateKite(int id, Kite kite){
         Optional<Kite> foundKite = kiteRepository.findById(id);
 
         if (foundKite.isEmpty())
             throw new KiteNotFoundException("La cometa que intentas modificar no existe");
 
-        PersonDTO person = personFeignClient.getPersonByNickName(kite.getOwner());
 
-        if (person == null)
-            throw new OwnerNotFoundException("El dueño asignado a esta cometa no existe");
 
 
         Kite kiteToChange = foundKite.get();
@@ -128,6 +151,13 @@ public class KiteService {
 
     //PATCH
 
+    /**
+     * Permite modificar el viento requerido de la cometa
+     * @param id El id de la cometa a modificar
+     * @param kite Una cometa DTO con el viento requerido especificado
+     * @return Esa cometa con el viento requerido modificado
+     * @throws KiteNotFoundException Si no existe ninguna cometa con ese ID
+     */
     public Kite updateWindRequiredKite(int id, KiteUpdatedWindDTO kite){
         Optional<Kite> foundKite = kiteRepository.findById(id);
 
@@ -142,6 +172,13 @@ public class KiteService {
 
     }
 
+    /**
+     * Permite modificar la ubicación de donde se va a utilizar esa cometa
+     * @param id El id de la cometa a modificar
+     * @param kite Una cometa DTO con la ubicación especificada
+     * @return Esa cometa con la ubicación modificada
+     * @throws KiteNotFoundException Si no existe ninguna cometa con ese ID
+     */
     public Kite updateLocationKite(int id, KiteUpdatedLocationDTO kite){
         Optional<Kite> foundKite = kiteRepository.findById(id);
 
