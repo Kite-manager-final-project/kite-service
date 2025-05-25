@@ -6,6 +6,7 @@ import com.iron.kite_service.dtos.KiteUpdatedLocationDTO;
 import com.iron.kite_service.dtos.KiteUpdatedWindDTO;
 import com.iron.kite_service.dtos.PersonDTO;
 import com.iron.kite_service.exceptions.KiteNotFoundException;
+import com.iron.kite_service.exceptions.OwnerNotFoundException;
 import com.iron.kite_service.models.Kite;
 import com.iron.kite_service.repositories.KiteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,11 @@ public class KiteService {
     //POST
 
     public Kite saveKite(Kite kite){
+        PersonDTO person = personFeignClient.getPersonByNickName(kite.getOwner());
+
+        if (person == null)
+            throw new OwnerNotFoundException("El dueño asignado a esta cometa no existe");
+
         return kiteRepository.save(kite);
     }
 
@@ -97,7 +103,20 @@ public class KiteService {
         if (foundKite.isEmpty())
             throw new KiteNotFoundException("La cometa que intentas modificar no existe");
 
+        PersonDTO person = personFeignClient.getPersonByNickName(kite.getOwner());
+
+        if (person == null)
+            throw new OwnerNotFoundException("El dueño asignado a esta cometa no existe");
+
+
         Kite kiteToChange = foundKite.get();
+
+        final String OWNER = kiteToChange.getOwner();
+
+        final String OWNER_KITE_RECEIVED = kite.getOwner();
+
+        if (!OWNER.equals(OWNER_KITE_RECEIVED))
+            throw new OwnerNotFoundException("No le puedes cambiar el dueño a una cometa, tienes que pasarle el mismo dueño");
 
         kiteToChange.setLocation(kite.getLocation());
         kiteToChange.setOwner(kite.getOwner());
