@@ -31,6 +31,8 @@ public class KiteService {
     public Kite saveKite(Kite kite){
         PersonDTO person = personFeignClient.getPersonByNickName(kite.getOwner());
 
+        System.out.println("La persona encontrada es "+person);
+
         if (person == null)
             throw new OwnerNotFoundException("El dueño asignado a esta cometa no existe");
 

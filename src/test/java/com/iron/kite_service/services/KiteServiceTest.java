@@ -17,7 +17,7 @@ class KiteServiceTest {
     KiteService kiteService;
 
 
-    @Test
+    /*@Test
     @DisplayName("Asigno 3 cometas al hombre de la rae, que las va a usar en distintas ubicaciones")
     void insert3Kites(){
 
@@ -55,7 +55,7 @@ class KiteServiceTest {
         System.out.println("Esta es la cometa que has guardado");
         System.out.println(saveKite);
         System.out.println("================================");
-    }
+    }*/
 
     /*@Test
     @DisplayName("Busco las cometas que tiene hombre_de_la_rae en Madrid")

@@ -49,6 +49,7 @@ public class KiteController {
     @PostMapping
     public ResponseEntity<?> saveKite(@Valid @RequestBody Kite kite){
         try {
+            System.out.println("Cometa recibida: "+kite);
             return ResponseEntity.ok(kiteService.saveKite(kite));
         }catch (OwnerNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
