@@ -4,6 +4,7 @@ import com.iron.kite_service.dtos.KiteResponseDTO;
 import com.iron.kite_service.dtos.KiteUpdatedLocationDTO;
 import com.iron.kite_service.dtos.KiteUpdatedWindDTO;
 import com.iron.kite_service.exceptions.KiteNotFoundException;
+import com.iron.kite_service.exceptions.OwnerNotFoundException;
 import com.iron.kite_service.models.Kite;
 import com.iron.kite_service.services.KiteService;
 import jakarta.validation.Valid;
@@ -45,8 +46,14 @@ public class KiteController {
     //POST
 
     @PostMapping
-    public ResponseEntity<Kite> saveKite(@Valid @RequestBody Kite kite){
-        return ResponseEntity.ok(kiteService.saveKite(kite));
+    public ResponseEntity<?> saveKite(@Valid @RequestBody Kite kite){
+        try {
+            return ResponseEntity.ok(kiteService.saveKite(kite));
+        }catch (OwnerNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", e.getMessage(), "status", 404));
+        }
+
     }
 
 
