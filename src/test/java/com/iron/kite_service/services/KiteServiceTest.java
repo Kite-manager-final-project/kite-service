@@ -69,17 +69,17 @@ class KiteServiceTest {
     @Transactional
     @DisplayName("Guardar una cometa con un dueño existente")
     void saveKite() throws Exception {
-        Kite kite = new Kite(25, "Sevilla", "tester");
+        Kite request = new Kite(25, "Sevilla", "tester");
 
-        String kiteJSON = objectMapper.writeValueAsString(kite);
+        String kiteJSON = objectMapper.writeValueAsString(request);
 
         mockMvc.perform(post("/api/kite")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(kiteJSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.location").value(kite.getLocation()))
-                .andExpect(jsonPath("$.owner").value(kite.getOwner()))
-                .andExpect(jsonPath("$.windRequired").value(kite.getWindRequired()));
+                .andExpect(jsonPath("$.location").value(request.getLocation()))
+                .andExpect(jsonPath("$.owner").value(request.getOwner()))
+                .andExpect(jsonPath("$.windRequired").value(request.getWindRequired()));
     }
 
     @Test
@@ -97,6 +97,58 @@ class KiteServiceTest {
     }
 
     //PUT
+
+    @Test
+    @DisplayName("Modifico una cometa completa")
+    @Transactional
+    void updateKite() throws Exception {
+
+        Kite request = new Kite(23, "Albacete", "auronplay");
+
+        String requestBody = objectMapper.writeValueAsString(request);
+
+        mockMvc.perform(put("/api/kite/17")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.location").value(request.getLocation()))
+                .andExpect(jsonPath("$.owner").value(request.getOwner()))
+                .andExpect(jsonPath("$.windRequired").value(request.getWindRequired()));
+    }
+
+
+    @Test
+    @DisplayName("Intento cambiarle el sueño a una cometa existente")
+    void changeOwnerKite() throws Exception {
+
+        Kite request = new Kite(23, "Albacete", "hombre_de_la_rae");
+
+        String requestBody = objectMapper.writeValueAsString(request);
+
+        mockMvc.perform(put("/api/kite/17")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value("No le puedes cambiar el dueño a una cometa, " +
+                        "tienes que pasarle el mismo dueño"));
+
+
+    }
+
+    @Test
+    @DisplayName("Intento modificar una cometa completamente con un id no existente")
+    void updateUnExistingKite() throws Exception {
+
+        Kite request = new Kite(23, "Albacete", "auronplay");
+
+        String requestBody = objectMapper.writeValueAsString(request);
+
+        mockMvc.perform(put("/api/kite/20")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("La cometa que intentas modificar no existe"));
+    }
 
     //PATCH
 
