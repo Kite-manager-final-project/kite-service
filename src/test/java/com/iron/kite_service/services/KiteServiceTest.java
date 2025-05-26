@@ -224,10 +224,29 @@ class KiteServiceTest {
 
     //DELETE
 
+    @Test
+    @DisplayName("Elimino una cometa existente")
+    @Transactional
+    void deleteKite() throws Exception {
+
+        mockMvc.perform(delete("/api/kite/17")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Esa cometa ha sido eliminada correctamente"));
+
+    }
+
+    @Test
+    @DisplayName("Elimino una cometa inexistente")
+    void deleteUnexistingKite() throws Exception {
+
+        mockMvc.perform(delete("/api/kite/27")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("La cometa que intentas eliminar no existe"));
 
 
-
-
+    }
 
 
 }
