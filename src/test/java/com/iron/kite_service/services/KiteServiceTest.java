@@ -1,14 +1,24 @@
 package com.iron.kite_service.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iron.kite_service.models.Kite;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
 
-import java.util.List;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+
 
 @SpringBootTest
 class KiteServiceTest {
@@ -16,79 +26,86 @@ class KiteServiceTest {
     @Autowired
     KiteService kiteService;
 
+    @Autowired
+    WebApplicationContext webApplicationContext;
 
-    /*@Test
-    @DisplayName("Asigno 3 cometas al hombre de la rae, que las va a usar en distintas ubicaciones")
-    void insert3Kites(){
+    MockMvc mockMvc;
 
-        Kite kite1, kite2, kite3;
+    final ObjectMapper objectMapper = new ObjectMapper();
 
-        kite1 = new Kite(23, "Madrid", "hombre_de_la_rae");
+    @BeforeEach
+    void setUp(){
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+    }
 
-        kite2 = new Kite(23, "Caraquiz, Uceda (Guadalajara)", "hombre_de_la_rae");
 
-        kite3 = new Kite(23, "Torrevieja (Alicante)", "hombre_de_la_rae");
+    //GET
 
-        Kite savedKite1, savedKite2, savedKite3;
+    @Test
+    @DisplayName("Obtener una cometa por ID")
+    void findKiteById() throws Exception {
+        int existingId = 1;
 
-        savedKite1 = kiteService.saveKite(kite1);
-        savedKite2 = kiteService.saveKite(kite2);
-        savedKite3 = kiteService.saveKite(kite3);
-
-        System.out.println("================================");
-        System.out.println("Estas son las cometas que has guardado");
-        System.out.println(savedKite1);
-        System.out.println(savedKite2);
-        System.out.println(savedKite3);
-        System.out.println("================================");
-
+        mockMvc.perform(get("/api/kite/"+existingId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(existingId));
     }
 
     @Test
-    @DisplayName("Asigno una cometa a auronplay que la utilizará en Madrid")
-    void assignKiteToAuronplayThatUseInMadrid(){
-        Kite kite = new Kite(23, "Madrid", "auronplay");
+    @DisplayName("Buscar una cometa inexistente")
+    void findNonExistingKite() throws Exception {
 
-        Kite saveKite = kiteService.saveKite(kite);
+        mockMvc.perform(get("/api/kite/40")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("La cometa que intentas buscar no existe"));
+    }
 
-        System.out.println("================================");
-        System.out.println("Esta es la cometa que has guardado");
-        System.out.println(saveKite);
-        System.out.println("================================");
-    }*/
 
-    /*@Test
-    @DisplayName("Busco las cometas que tiene hombre_de_la_rae en Madrid")
-    void findKiteByOwnerAndLocation(){
-        List<Kite> foundKites = kiteService.getAllKites("hombre_de_la_rae", "Madrid");
+    //POST
 
-        System.out.println("================================");
-        System.out.println("Estas son las cometas que hemos encontrado");
-        System.out.println(foundKites);
-        System.out.println("================================");
+    @Test
+    @Transactional
+    @DisplayName("Guardar una cometa con un dueño existente")
+    void saveKite() throws Exception {
+        Kite kite = new Kite(25, "Sevilla", "tester");
+
+        String kiteJSON = objectMapper.writeValueAsString(kite);
+
+        mockMvc.perform(post("/api/kite")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(kiteJSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.location").value(kite.getLocation()))
+                .andExpect(jsonPath("$.owner").value(kite.getOwner()))
+                .andExpect(jsonPath("$.windRequired").value(kite.getWindRequired()));
     }
 
     @Test
-    @DisplayName("Busco las cometas que tiene hombre_de_la_rae")
-    void finsKitesHombreDeLaRae(){
-        List<Kite> foundKites = kiteService.getAllKites("hombre_de_la_rae", null);
+    @DisplayName("Guardo la cometa con un dueño inexistente")
+    void saveKiteWithUnexistingOwner() throws Exception {
+        Kite kite = new Kite(25, "Cáceres", "fernan");
 
-        System.out.println("================================");
-        System.out.println("Estas son las cometas que hemos encontrado");
-        System.out.println(foundKites);
-        System.out.println("================================");
+        String kiteJSON = objectMapper.writeValueAsString(kite);
+
+        mockMvc.perform(post("/api/kite")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(kiteJSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("El dueño '" + kite.getOwner() + "' no existe."));
     }
 
-    @Test
-    @DisplayName("Busco las cometas que están registradas en Madrid")
-    void finsKitesInMadrid(){
-        List<Kite> foundKites = kiteService.getAllKites(null, "Madrid");
+    //PUT
 
-        System.out.println("================================");
-        System.out.println("Estas son las cometas que hemos encontrado");
-        System.out.println(foundKites);
-        System.out.println("================================");
-    }*/
+    //PATCH
+
+    //DELETE
+
+
+
+
+
 
 
 }

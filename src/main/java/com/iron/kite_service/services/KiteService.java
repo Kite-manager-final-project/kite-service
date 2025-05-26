@@ -40,7 +40,6 @@ public class KiteService {
             personFeignClient.getPersonByNickName(kite.getOwner());
             return kiteRepository.save(kite);
         }catch (FeignException.NotFound e) {
-            System.out.println("Error");
             throw new OwnerNotFoundException("El dueño '" + kite.getOwner() + "' no existe.");
         }
 
