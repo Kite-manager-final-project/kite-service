@@ -2,6 +2,8 @@ package com.iron.kite_service.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.iron.kite_service.dtos.KiteUpdatedLocationDTO;
+import com.iron.kite_service.dtos.KiteUpdatedWindDTO;
 import com.iron.kite_service.models.Kite;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -151,6 +153,74 @@ class KiteServiceTest {
     }
 
     //PATCH
+
+    @Test
+    @DisplayName("Modifico el viento requerido a una cometa existente")
+    @Transactional
+    void updateWindRequired() throws Exception {
+
+        KiteUpdatedWindDTO request = new KiteUpdatedWindDTO(30);
+
+        String requestBody = objectMapper.writeValueAsString(request);
+
+        mockMvc.perform(patch("/api/kite/updateWindRequired/9")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestBody))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.windRequired").value(request.getWindRequired()));
+
+    }
+
+    @Test
+    @DisplayName("Modifico el viento requerido a una cometa no existente")
+    void updateWindRequiredUnexistingKite() throws Exception {
+
+        KiteUpdatedWindDTO request = new KiteUpdatedWindDTO(30);
+
+        String requestBody = objectMapper.writeValueAsString(request);
+
+        mockMvc.perform(patch("/api/kite/updateWindRequired/19")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("La cometa que intentas modificar no existe"));
+
+    }
+
+    @Test
+    @DisplayName("Modifico la ubicación a una cometa existente")
+    @Transactional
+    void updateLocationKite() throws Exception {
+
+        KiteUpdatedLocationDTO request = new KiteUpdatedLocationDTO("Burgos");
+
+        String requestBody = objectMapper.writeValueAsString(request);
+
+        mockMvc.perform(patch("/api/kite/updateLocation/9")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.location").value(request.getLocation()));
+
+    }
+
+    @Test
+    @DisplayName("Modifico el viento requerido a una cometa no existente")
+    void updateLocationUnexistingKite() throws Exception {
+
+        KiteUpdatedLocationDTO request = new KiteUpdatedLocationDTO("Madrid");
+
+        String requestBody = objectMapper.writeValueAsString(request);
+
+        mockMvc.perform(patch("/api/kite/updateLocation/19")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("La cometa que intentas modificar no existe"));
+
+    }
+
+
 
     //DELETE
 
